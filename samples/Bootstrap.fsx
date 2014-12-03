@@ -1,0 +1,17 @@
+﻿#time "on"
+
+#I @"..\packages\Akka.0.7.0\lib\net45"
+#I @"..\packages\Akka.FSharp.0.7.0\lib\net45"
+#I @"..\packages\Akka.Remote.0.7.0\lib\net45"
+#I @"..\packages\Akka.TestKit.0.7.0\lib\net45"
+#I @"..\packages\FsPickler.0.9.11\lib\net45"
+#I @"..\packages\FSPowerPack.Core.Community.3.0.0.0\Lib\Net40"
+#I @"..\packages\FSPowerPack.Linq.Community.3.0.0.0\Lib\Net40"
+#I @"..\packages\Newtonsoft.Json.6.0.1\lib\net45"
+#I @"..\packages\Google.ProtocolBuffers.2.4.1.521\lib\net40"
+#I @"..\packages\Helios.1.3.5.0\lib\net45"
+
+#r "Akka.dll"
+#r "Akka.FSharp.dll"
+#r "Akka.Remote.dll"
+#r "Akka.TestKit.dll"
