@@ -18,7 +18,7 @@ let echoServer =
             actor {
                 let! message = mailbox.Receive()
                 match box message with
-                | :? string -> printfn "Hello %s" message
+                | :? string as msg -> printfn "Hello %s" msg
                 | _ ->  failwith "unknown message"
             } 
 

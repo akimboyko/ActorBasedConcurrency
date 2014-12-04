@@ -39,7 +39,7 @@ let echoServer =
                 match box message with
                 | :? string as url -> 
                     let response = fromUrl url
-                    printfn "done!"
+                    printfn "actor: done!"
                     sender <! response
                     return! loop()
                 | _ ->  failwith "unknown message"
@@ -53,8 +53,8 @@ for timeout in [10; 100; 250; 2500] do
         let response = Async.RunSynchronously (task, timeout)
         let responseLength = string(response) |> String.length
 
-        printfn "result has %d bytes" responseLength
+        printfn "response: result has %d bytes" responseLength
     with :? TimeoutException ->
-        printfn "timeout!"
+        printfn "ask: timeout!"
 
 system.Shutdown()

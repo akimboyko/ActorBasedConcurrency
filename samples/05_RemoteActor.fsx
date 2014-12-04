@@ -43,6 +43,7 @@ let system = ActorSystem.Create("RemoteFSharp", configuration)
 let echoServer = 
     spawn system "EchoServer"
     <| fun mailbox ->
+        let rec loop() =
             actor {
                 let! message = mailbox.Receive()
                 let sender = mailbox.Sender()
@@ -50,8 +51,10 @@ let echoServer =
                 | :? string -> 
                         printfn "super!"
                         sender <! sprintf "Hello %s remote" message
+                        return! loop()
                 | _ ->  failwith "unknown message"
             } 
+        loop()
 
 let echoClient = system.ActorSelection(
                             "akka.tcp://RemoteFSharp@localhost:8777/user/EchoServer")
