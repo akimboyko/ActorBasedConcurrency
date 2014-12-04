@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{1958
 		samples\04_SynchronizedAsk.fsx = samples\04_SynchronizedAsk.fsx
 		samples\05_RemoteActor.fsx = samples\05_RemoteActor.fsx
 		samples\06_EventStream.fsx = samples\06_EventStream.fsx
+		samples\07_TypedMessages.fsx = samples\07_TypedMessages.fsx
 		samples\Bootstrap.fsx = samples\Bootstrap.fsx
 		samples\HelloActor!.fsx = samples\HelloActor!.fsx
 	EndProjectSection
