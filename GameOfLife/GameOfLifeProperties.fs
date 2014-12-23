@@ -14,7 +14,7 @@ module GameOfLifeProperties =
         inherit TestKit()
 
         let system = kit.Sys
-        let waitFor = TimeSpan.FromMilliseconds(100.0)
+        let waitFor = TimeSpan.FromMilliseconds(50.0)
         let timeout = Nullable(waitFor)
 
         let shouldReceiveSpawn statuses =
@@ -29,36 +29,38 @@ module GameOfLifeProperties =
             nMessages = 3 || (nMessages = 2 && overAllStatus = Occupied)
 
         [<Fact>]
-        member self.``'Spawn' cell and receive back all 'Neighborhood' messages`` () =
-            Spec.ForAny<int * int>(fun (x, y) ->
+        member self.``Send 'Spawn' cell and receive back all 'Neighborhood' messages`` () =
+            let property (x, y) =
                 let cellRef = spawn system "Cell" <| cellActorCont
 
                 cellRef <! Spawn(x, y)
 
-                self.ExpectMsg(Neighborhood(x, y, Occupied),  timeout) |> ignore
+                self.ExpectMsg(Neighborhood((x, y), Occupied),  timeout) |> ignore
             
-                self.ExpectMsg(Neighborhood(x + 1, y + 1, Unknown), timeout) |> ignore
-                self.ExpectMsg(Neighborhood(x + 1, y + 0, Unknown), timeout) |> ignore
-                self.ExpectMsg(Neighborhood(x + 1, y - 1, Unknown), timeout) |> ignore
-                self.ExpectMsg(Neighborhood(x + 0, y - 1, Unknown), timeout) |> ignore
-                self.ExpectMsg(Neighborhood(x - 1, y - 1, Unknown), timeout) |> ignore
-                self.ExpectMsg(Neighborhood(x - 1, y + 0, Unknown), timeout) |> ignore
-                self.ExpectMsg(Neighborhood(x - 1, y + 1, Unknown), timeout) |> ignore
-                self.ExpectMsg(Neighborhood(x + 0, y + 1, Unknown), timeout) |> ignore
+                self.ExpectMsg(Neighborhood((x + 1, y + 1), Unknown), timeout) |> ignore
+                self.ExpectMsg(Neighborhood((x + 1, y + 0), Unknown), timeout) |> ignore
+                self.ExpectMsg(Neighborhood((x + 1, y - 1), Unknown), timeout) |> ignore
+                self.ExpectMsg(Neighborhood((x + 0, y - 1), Unknown), timeout) |> ignore
+                self.ExpectMsg(Neighborhood((x - 1, y - 1), Unknown), timeout) |> ignore
+                self.ExpectMsg(Neighborhood((x - 1, y + 0), Unknown), timeout) |> ignore
+                self.ExpectMsg(Neighborhood((x - 1, y + 1), Unknown), timeout) |> ignore
+                self.ExpectMsg(Neighborhood((x + 0, y + 1), Unknown), timeout) |> ignore
 
-                self.ExpectNoMsg(waitFor)
+                self.ExpectNoMsg(waitFor) |> ignore
                 
-                true).QuickCheckThrowOnFailure()
+                true
+
+            Spec.ForAny<int * int>(property).QuickCheckThrowOnFailure()
 
             system.Shutdown()
 
         [<Fact>]
         member self.``Aggregating 'Neighborhood' messages and receive result`` () =
-            Spec.ForAny<int * int * CellStatus[]>(fun (x, y, statuses) ->
+            let property (x, y, statuses) =
                 let aggregateRef = spawn system "Aggregate" <| aggregateActorCont
 
                 for status in statuses do
-                    aggregateRef <! Neighborhood(x, y, status)
+                    aggregateRef <! Neighborhood((x, y), status)
 
                 aggregateRef <! AggregationCompleted
 
@@ -67,6 +69,8 @@ module GameOfLifeProperties =
                     
                 self.ExpectNoMsg(waitFor)
 
-                true).QuickCheckThrowOnFailure()
+                true
+            
+            Spec.ForAny<int * int * CellStatus[]>(property).QuickCheckThrowOnFailure()
 
             system.Shutdown()
