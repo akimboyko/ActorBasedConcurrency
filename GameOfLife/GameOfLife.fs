@@ -92,6 +92,14 @@ module Domain =
 
         cont
 
+    type ActorType =
+    | Cell
+    | Neighbor
+
+    let private name entityType xy =
+        match xy with
+        | (x, y) -> sprintf "%A:(%d,%d)" entityType x y
+
     let coordinatorActorCont = 
         let cont (mailbox : Actor<Command>) =
             let emptyDict = ImmutableDictionary.Empty
@@ -108,8 +116,8 @@ module Domain =
                             if cells.ContainsKey xy then
                                 cells
                             else
-                                let cellName = sprintf "Cell %A" xy
-                                let cellRef = mailbox.spawn cellName <| cellActorCont
+                                let cellName = name Cell xy
+                                let cellRef = spawn mailbox cellName <| cellActorCont
 
                                 cells.Add(xy, cellRef) 
 
@@ -147,8 +155,8 @@ module Domain =
                             if success then
                                 (neighborhoods, actorRef)
                             else 
-                                let neighborhoodName = sprintf "Neighborhood %A" xy
-                                let neighborhoodRef = mailbox.spawn neighborhoodName <| aggregateActorCont
+                                let neighborhoodName = name Neighbor xy
+                                let neighborhoodRef = spawn mailbox neighborhoodName <| aggregateActorCont
 
                                 (neighborhoods.Add(xy, neighborhoodRef), neighborhoodRef)
                                 
