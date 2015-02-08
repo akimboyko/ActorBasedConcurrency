@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <Name>GameOfLife</Name>
-    <NuGetPackageImportStamp>4d101d08</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>09c33e32</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,17 +54,11 @@
   <Target Name="BeforeBuild">
   </Target>
   -->
-  <UsingTask AssemblyFile="..\packages\FSharpLint.0.1.12\FSharpLint.MSBuildIntegration.dll" TaskName="FSharpLintTask" Condition="'$(NCrunch)' != '1'" />
+  <UsingTask AssemblyFile="..\packages\FSharpLint.0.1.14\FSharpLint.MSBuildIntegration.dll" TaskName="FSharpLintTask" Condition="'$(NCrunch)' != '1'" />
   <Target Name="AfterBuild">
     <FSharpLintTask Project="$(MSBuildProjectFullPath)" Condition="'$(NCrunch)' != '1'" />
   </Target>
-  <Import Project="..\packages\FSharpLint.0.1.12\build\FSharpLint.targets" Condition="Exists('..\packages\FSharpLint.0.1.12\build\FSharpLint.targets') And '$(NCrunch)' != '1'" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\FSharpLint.0.1.12\build\FSharpLint.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\FSharpLint.0.1.12\build\FSharpLint.targets'))" />
-  </Target>
+  <Import Project="..\packages\FSharpLint.0.1.14\build\FSharpLint.targets" Condition="Exists('..\packages\FSharpLint.0.1.14\build\FSharpLint.targets') And '$(NCrunch)' != '1'" />
   <ItemGroup>
     <Compile Include="GameOfLife.fs" />
     <Compile Include="GameOfLifeTests.fs" />
@@ -110,9 +104,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="FsPickler">
-      <HintPath>..\packages\FsPickler.1.0.6\lib\net45\FsPickler.dll</HintPath>
+      <HintPath>..\packages\FsPickler.1.0.11\lib\net45\FsPickler.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FsPickler" />
     <Reference Include="FsUnit.CustomMatchers">
       <HintPath>..\packages\FsUnit.xUnit.1.3.0.1\Lib\net40\FsUnit.CustomMatchers.dll</HintPath>
       <Private>True</Private>
@@ -138,9 +133,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json" />
     <Reference Include="NHamcrest">
       <HintPath>..\packages\FsUnit.xUnit.1.3.0.1\Lib\net40\NHamcrest.dll</HintPath>
       <Private>True</Private>
@@ -157,4 +153,10 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\FSharpLint.0.1.14\build\FSharpLint.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\FSharpLint.0.1.14\build\FSharpLint.targets'))" />
+  </Target>
 </Project>
