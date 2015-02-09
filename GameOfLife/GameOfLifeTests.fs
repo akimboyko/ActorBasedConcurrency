@@ -198,6 +198,36 @@ module Tests =
             system.Shutdown()
 
         [<Fact>]
+        member self.``Coordinator publish to event stream``() =
+            let coordinatorRef = spawn system "Coordinator" <| coordinatorActorCont
+
+            system.EventStream.Subscribe(self.TestActor, typedefof<Event>) |> ignore
+
+            coordinatorRef <! Spawn(0, 0)
+            coordinatorRef <! SpawnCompleted
+
+            self.ExpectMsg(AggregationStarted 9 (*, timeout *)) |> ignore
+
+            self.ExpectMsgAllOf(waitFor,
+                                [|
+                                    Generation 0                           :> obj
+                                    LivingCell (0, 0)                      :> obj
+                                    Neighborhood((0 + 0, 0 + 0), Occupied) :> obj
+                                    Neighborhood((0 + 1, 0 + 1), Unknown)  :> obj 
+                                    Neighborhood((0 + 1, 0 + 0), Unknown)  :> obj 
+                                    Neighborhood((0 + 1, 0 - 1), Unknown)  :> obj 
+                                    Neighborhood((0 + 0, 0 - 1), Unknown)  :> obj 
+                                    Neighborhood((0 - 1, 0 - 1), Unknown)  :> obj 
+                                    Neighborhood((0 - 1, 0 + 0), Unknown)  :> obj 
+                                    Neighborhood((0 - 1, 0 + 1), Unknown)  :> obj 
+                                    Neighborhood((0 + 0, 0 + 1), Unknown)  :> obj                                    
+                                |]) |> ignore
+            
+            self.ExpectNoMsg(waitFor)
+
+            system.Shutdown()
+
+        [<Fact>]
         member self.``Collector aggregates no 'Neighborhood' and has nothing to do``() =
             let collectorRef = spawn system "Collector" <| collectorActorCont
 

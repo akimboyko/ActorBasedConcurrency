@@ -22,6 +22,10 @@ module Domain =
     | Neighborhood of Coordinates * CellStatus
     | AggregationCompleted
 
+    type Event =
+    | Generation of int
+    | LivingCell of Coordinates
+
     let poisonPill = PoisonPill.Instance
 
     let cellActorCont = 
@@ -58,8 +62,7 @@ module Domain =
     let aggregateActorCont = 
         let cont (mailbox : Actor<Message>) =
             let aggregate currentStatus status =
-                if status = Occupied then Occupied
-                else if currentStatus = Occupied then Occupied
+                if status = Occupied || currentStatus = Occupied then Occupied
                 else Unknown
 
             let conditionForNewCell n status =
@@ -104,7 +107,7 @@ module Domain =
         let cont (mailbox : Actor<Command>) =
             let emptyDict = ImmutableDictionary.Empty
 
-            let rec cellsLoop (cells:IImmutableDictionary<Coordinates, ActorRef>) =
+            let rec cellsLoop nGeneration (cells:IImmutableDictionary<Coordinates, ActorRef>) =
                 actor { 
                     let! command = mailbox.Receive()
                     let sender = mailbox.Sender()
@@ -121,17 +124,23 @@ module Domain =
 
                                 cells.Add(xy, cellRef) 
 
-                        return! cellsLoop cells
+                        return! cellsLoop nGeneration cells
                     | SpawnCompleted -> 
                         sender <! AggregationStarted(9 * cells.Count)
+                        let eventStream = mailbox.Context.System.EventStream
+
+                        // replace with `pub` during next release
+                        eventStream.Publish(Generation nGeneration)
+
                         for xy in cells.Keys do
                             let actorRef = cells.[xy]
                             actorRef.Tell(Spawn(xy), sender)
+                            eventStream.Publish(LivingCell xy)
 
-                        return! cellsLoop emptyDict
+                        return! cellsLoop (nGeneration + 1) emptyDict
                 }
 
-            cellsLoop emptyDict
+            cellsLoop 0 emptyDict
 
         cont
 
