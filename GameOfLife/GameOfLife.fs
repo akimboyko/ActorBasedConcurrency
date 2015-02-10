@@ -3,6 +3,7 @@
 module Domain =
     open System
     open System.Collections.Immutable
+    open System.Text
     open Akka.Actor
     open Akka.Configuration
     open Akka.FSharp
@@ -182,5 +183,65 @@ module Domain =
                 }
 
             collectLoop 0 emptyDict mailbox.Self
+
+        cont
+
+    let generationDisplayActorCont (output:StringBuilder) =
+        let cont (mailbox : Actor<Event>) =
+            let composeOutput nGeneration cells (output:StringBuilder) =
+                output.AppendLine(sprintf "Generation %d" nGeneration) |> ignore
+
+                if cells |> Seq.isEmpty then
+                    ignore
+                else
+                    let firstCell = Seq.head cells
+
+                    let (minX, minY) = 
+                        cells
+                        |> Seq.skip 1
+                        |> Seq.fold (fun (minX, minY) (x, y) -> 
+                                    (min x minX, min y minY))
+                                    firstCell
+
+                    let (maxX, maxY) = 
+                        cells
+                        |> Seq.skip 1
+                        |> Seq.fold (fun (maxX, maxY) (x, y) -> 
+                                    (max x maxX, max y maxY))
+                                    firstCell
+
+                    let (width, height) = 
+                        (maxX - minX, maxY - minY)
+
+                    let printable = 
+                        seq { minY .. maxY }
+                        |> Seq.map(fun _ -> seq { minX .. maxX } 
+                                            |> Seq.map(fun _ -> ' ')
+                                            |> Seq.toArray)
+                        |> Seq.toArray
+    
+                    for (x, y) in cells do
+                        printable.[y - minY].[x - minX] <- '#'
+
+                    for line in printable do
+                        output.AppendLine(new String(line)) |> ignore
+
+                    ignore
+
+            let rec generationLoop nGeneration cells =
+                actor { 
+                    let! message = mailbox.Receive()
+                    let sender = mailbox.Sender()
+                    let self = mailbox.Self
+
+                    match message with
+                    | Generation(nGeneration) ->
+                        composeOutput nGeneration cells output |> ignore
+                        return! generationLoop nGeneration ImmutableHashSet.Empty
+                    | LivingCell(xy) ->
+                        return! generationLoop nGeneration (cells.Add(xy))
+                }
+            
+            generationLoop 0 ImmutableHashSet.Empty
 
         cont

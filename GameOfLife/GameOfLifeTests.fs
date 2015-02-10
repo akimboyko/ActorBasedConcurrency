@@ -2,6 +2,7 @@
 
 module Tests =
     open System
+    open System.Text
     open Xunit
     open FsUnit.Xunit
     open Akka.Actor
@@ -17,6 +18,8 @@ module Tests =
         let system = kit.Sys
         let waitFor = TimeSpan.FromMilliseconds(250.0)
         let timeout = Nullable(waitFor)
+
+        let verify = Swensen.Unquote.Assertions.test
 
         [<Fact>]
         member self.``Let's 'Spawn' cell and receive back 'Neighborhood' messages`` () =
@@ -331,3 +334,71 @@ module Tests =
             self.ExpectNoMsg(waitFor)
 
             system.Shutdown()
+
+        [<Fact>]
+        member self.``Expected empty generation`` () =
+            let output = new StringBuilder()
+            let generationDisplayRef = spawn system "GenerationDisplay" <| generationDisplayActorCont(output)
+
+            let eventStream = system.EventStream
+            eventStream.Subscribe(generationDisplayRef, typedefof<Event>) |> ignore
+
+            eventStream.Publish(Generation(0))
+
+            self.ExpectNoMsg(waitFor)
+
+            system.Shutdown()
+
+            let results = output.ToString()
+
+            verify <@ results = "Generation 0" + Environment.NewLine @>
+
+        [<Fact>]
+        member self.``Expected generation of one cell`` () =
+            let output = new StringBuilder()
+            let generationDisplayRef = spawn system "GenerationDisplay" <| generationDisplayActorCont(output)
+
+            let eventStream = system.EventStream
+            eventStream.Subscribe(generationDisplayRef, typedefof<Event>) |> ignore
+
+            eventStream.Publish(Generation(0))
+            eventStream.Publish(LivingCell(1, 1))
+            eventStream.Publish(Generation(1))
+
+            self.ExpectNoMsg(waitFor)
+
+            system.Shutdown()
+
+            let results = output.ToString()
+
+            verify <@ results = 
+                        ("Generation 0" + Environment.NewLine +
+                         "Generation 1" + Environment.NewLine + 
+                         "#" + Environment.NewLine)
+                    @>
+
+        [<Fact>]
+        member self.``Expected generation of three cells`` () =
+            let output = new StringBuilder()
+            let generationDisplayRef = spawn system "GenerationDisplay" <| generationDisplayActorCont(output)
+
+            let eventStream = system.EventStream
+            eventStream.Subscribe(generationDisplayRef, typedefof<Event>) |> ignore
+
+            eventStream.Publish(Generation(0))
+            eventStream.Publish(LivingCell(0, 1))
+            eventStream.Publish(LivingCell(1, 1))
+            eventStream.Publish(LivingCell(2, 1))
+            eventStream.Publish(Generation(1))
+
+            self.ExpectNoMsg(waitFor)
+
+            system.Shutdown()
+
+            let results = output.ToString()
+
+            verify <@ results = 
+                        ("Generation 0" + Environment.NewLine +
+                         "Generation 1" + Environment.NewLine + 
+                         "###" + Environment.NewLine)
+                    @>
