@@ -18,13 +18,18 @@ module GameOfLifeProperties =
         let timeout = Nullable(waitFor)
 
         let shouldReceiveSpawn statuses =
-            let nMessages = statuses |> Array.length
+            let nMessages = 
+                statuses
+                |> Array.filter(fun state -> state = Unknown)
+                |> Array.length
+
             let overAllStatus = 
-                statuses |>
-                Array.fold(fun state overall -> 
-                            if state = Occupied then Occupied
-                            else if overall = Occupied then Occupied
-                            else Unknown) Unknown
+                statuses
+                 |> Array.fold(fun state overall -> 
+                                match (state, overall) with
+                                | (Occupied, _)
+                                | (_, Occupied) -> Occupied
+                                | (_, _) -> Unknown) Unknown
 
             nMessages = 3 || (nMessages = 2 && overAllStatus = Occupied)
 

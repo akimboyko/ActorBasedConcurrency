@@ -78,7 +78,11 @@ module Domain =
                     match message with
                     | AggregationStarted(_) -> failwith "Unsupported message"
                     | Neighborhood(xy, status) -> 
-                        let n = n + 1
+                        let n =
+                            match status with
+                            | Occupied -> n
+                            | Unknown  -> n + 1
+
                         let status = aggregate currentStatus status 
                         let position = Some(xy)
                              

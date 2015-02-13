@@ -87,10 +87,23 @@ module Tests =
             system.Shutdown()
 
         [<Fact>]
-        member self.``Aggregating two 'Neighborhood' messages one with 'Unknown' status will result in new cell``() =
+        member self.``Aggregating one 'Neighborhood' messages with 'Unknown' status and one 'Occupied' will remove cell``() =
             let aggregateRef = spawn system "Aggregate" <| aggregateActorCont
 
             aggregateRef <! Neighborhood((0, 0), Occupied)
+            aggregateRef <! Neighborhood((0, 0), Unknown)
+            aggregateRef <! AggregationCompleted
+
+            self.ExpectNoMsg(waitFor)
+
+            system.Shutdown()
+
+        [<Fact>]
+        member self.``Aggregating two 'Neighborhood' messages with 'Unknown' status and one 'Occupied' will keep cell``() =
+            let aggregateRef = spawn system "Aggregate" <| aggregateActorCont
+
+            aggregateRef <! Neighborhood((0, 0), Occupied)
+            aggregateRef <! Neighborhood((0, 0), Unknown)
             aggregateRef <! Neighborhood((0, 0), Unknown)
             aggregateRef <! AggregationCompleted
 
@@ -252,14 +265,12 @@ module Tests =
             system.Shutdown()
 
         [<Fact>]
-        member self.``Collector aggregates two times same 'Neighborhood' one with 'Occupied' and spawns back new cell``() =
+        member self.``Collector aggregates two times same 'Neighborhood' one with 'Occupied' and has nothing to do``() =
             let collectorRef = spawn system "Collector" <| collectorActorCont
 
             collectorRef <! AggregationStarted 2
             collectorRef <! Neighborhood((0, 0), Occupied)
             collectorRef <! Neighborhood((0, 0), Unknown)
-
-            self.ExpectMsg(Spawn(0, 0), timeout) |> ignore
 
             self.ExpectNoMsg(waitFor)
 
@@ -308,7 +319,7 @@ module Tests =
             system.Shutdown()
 
         [<Fact>]
-        member self.``Collector aggregates four times same 'Neighborhood' one with 'Occupied' and has nothing to do``() =
+        member self.``Collector aggregates four times same 'Neighborhood' one with 'Occupied' and keep cell``() =
             let collectorRef = spawn system "Collector" <| collectorActorCont
 
             collectorRef <! AggregationStarted 4
@@ -316,6 +327,8 @@ module Tests =
             collectorRef <! Neighborhood((0, 0), Unknown)
             collectorRef <! Neighborhood((0, 0), Unknown)
             collectorRef <! Neighborhood((0, 0), Unknown)
+
+            self.ExpectMsg(Spawn(0, 0), timeout) |> ignore
 
             self.ExpectNoMsg(waitFor)
 
@@ -326,6 +339,21 @@ module Tests =
             let collectorRef = spawn system "Collector" <| collectorActorCont
 
             collectorRef <! AggregationStarted 4
+            collectorRef <! Neighborhood((0, 0), Unknown)
+            collectorRef <! Neighborhood((0, 0), Unknown)
+            collectorRef <! Neighborhood((0, 0), Unknown)
+            collectorRef <! Neighborhood((0, 0), Unknown)
+
+            self.ExpectNoMsg(waitFor)
+
+            system.Shutdown()
+
+        [<Fact>]
+        member self.``Collector aggregates four times 'Unknow' and one 'Occupied' and has nothing to do``() =
+            let collectorRef = spawn system "Collector" <| collectorActorCont
+
+            collectorRef <! AggregationStarted 5
+            collectorRef <! Neighborhood((0, 0), Occupied)
             collectorRef <! Neighborhood((0, 0), Unknown)
             collectorRef <! Neighborhood((0, 0), Unknown)
             collectorRef <! Neighborhood((0, 0), Unknown)
