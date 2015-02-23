@@ -34,8 +34,26 @@ let displayRef      = spawn system "Display"     <| generationDisplayActorCont(o
 
 eventStream.Subscribe(displayRef, typedefof<Event>) |> ignore
 
+// ## Blinker (period 2) ##
+// coordinatorRef.Tell(Spawn(1, 0),    collectorRef)
+// coordinatorRef.Tell(Spawn(1, 1),    collectorRef)
+// coordinatorRef.Tell(Spawn(1, 2),    collectorRef)
+// coordinatorRef.Tell(SpawnCompleted, collectorRef)
+
+// ## Beacon (period 2) ##
+// coordinatorRef.Tell(Spawn(0, 0),    collectorRef)
+// coordinatorRef.Tell(Spawn(1, 0),    collectorRef)
+// coordinatorRef.Tell(Spawn(0, 1),    collectorRef)
+// coordinatorRef.Tell(Spawn(3, 2),    collectorRef)
+// coordinatorRef.Tell(Spawn(3, 3),    collectorRef)
+// coordinatorRef.Tell(Spawn(2, 3),    collectorRef)
+// coordinatorRef.Tell(SpawnCompleted, collectorRef)
+
+// ## Glider ##
+coordinatorRef.Tell(Spawn(0, 0),    collectorRef)
 coordinatorRef.Tell(Spawn(1, 0),    collectorRef)
-coordinatorRef.Tell(Spawn(1, 1),    collectorRef)
+coordinatorRef.Tell(Spawn(2, 0),    collectorRef)
+coordinatorRef.Tell(Spawn(2, 1),    collectorRef)
 coordinatorRef.Tell(Spawn(1, 2),    collectorRef)
 coordinatorRef.Tell(SpawnCompleted, collectorRef)
 
