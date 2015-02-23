@@ -59,10 +59,17 @@
     <FSharpLintTask Project="$(MSBuildProjectFullPath)" Condition="'$(NCrunch)' != '1'" />
   </Target>
   <Import Project="..\packages\FSharpLint.0.1.14\build\FSharpLint.targets" Condition="Exists('..\packages\FSharpLint.0.1.14\build\FSharpLint.targets') And '$(NCrunch)' != '1'" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\FSharpLint.0.1.14\build\FSharpLint.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\FSharpLint.0.1.14\build\FSharpLint.targets'))" />
+  </Target>
   <ItemGroup>
     <Compile Include="GameOfLife.fs" />
     <Compile Include="GameOfLifeTests.fs" />
     <Compile Include="GameOfLifeProperties.fs" />
+    <None Include="GameOfLifeStart.fsx" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
   </ItemGroup>
@@ -157,10 +164,4 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\FSharpLint.0.1.14\build\FSharpLint.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\FSharpLint.0.1.14\build\FSharpLint.targets'))" />
-  </Target>
 </Project>

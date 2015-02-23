@@ -74,6 +74,7 @@ module Domain =
                     let! message = mailbox.Receive()
                     let sender = mailbox.Sender()
                     let self = mailbox.Self
+                    let parentCoordinator = mailbox.Context.Parent
 
                     match message with
                     | AggregationStarted(_) -> failwith "Unsupported message"
@@ -93,6 +94,7 @@ module Domain =
                             sender <! Spawn (xy)
                         | _ -> ()
 
+                        parentCoordinator <! AggregationCompleted
                         self <! poisonPill
                 }
 
@@ -117,6 +119,7 @@ module Domain =
                     let! command = mailbox.Receive()
                     let sender = mailbox.Sender()
                     let self = mailbox.Self
+                    let log = mailbox.Context.System.Log
 
                     match command with
                     | Spawn(xy) -> 
@@ -128,6 +131,8 @@ module Domain =
                                 let cellRef = spawn mailbox cellName <| cellActorCont
 
                                 cells.Add(xy, cellRef) 
+
+                        log.Debug("spawn {0}!", xy)
 
                         return! cellsLoop nGeneration cells
                     | SpawnCompleted -> 
@@ -141,6 +146,8 @@ module Domain =
                             let actorRef = cells.[xy]
                             actorRef.Tell(Spawn(xy), sender)
                             eventStream.Publish(LivingCell xy)
+
+                        log.Debug("spawn {0} completed!", nGeneration)
 
                         return! cellsLoop (nGeneration + 1) emptyDict
                 }
@@ -158,10 +165,19 @@ module Domain =
                     let! message = mailbox.Receive()
                     let sender = mailbox.Sender()
                     let self = mailbox.Self
+                    let log = mailbox.Context.System.Log
 
                     match message with
                     | AggregationStarted(n) ->
-                        return! collectLoop n emptyDict sender
+                        log.Debug("aggregation {0}!", n)
+
+                        if n = 0 then // end of game
+                            sender <! SpawnCompleted
+                            sender <! poisonPill
+                            self   <! poisonPill
+                            log.Debug("life converge to 0")
+                        else
+                            return! collectLoop n emptyDict sender
                     | Neighborhood(xy, state) ->
                         let (neighborhoods, actorRef) = 
                             let (success, actorRef) = neighborhoods.TryGetValue xy
@@ -176,14 +192,39 @@ module Domain =
                                 
                         actorRef <! message
 
+                        let description = 
+                            match state with 
+                            | Occupied -> "occupied"
+                            | Unknown  -> "unknown"
+
+                        log.Debug("neighborhood {0}-{1}!", xy, description)
+
                         if n = 1 then
                             for actorRef in neighborhoods.Values do
                                 actorRef.Tell(AggregationCompleted, replyTo)
 
-                            return! collectLoop 0 emptyDict self
+                            let children = neighborhoods.Count
+                            return! aggregationCompletedLoop children replyTo
                         else
                             return! collectLoop (n - 1) neighborhoods replyTo
                     | AggregationCompleted -> failwith "Unsupported message"
+                }
+            and aggregationCompletedLoop n replyTo =
+                actor { 
+                    let! message = mailbox.Receive()
+                    let self = mailbox.Self
+                    let log = mailbox.Context.System.Log
+
+                    match message with
+                    | AggregationStarted(_)
+                    | Neighborhood(_)       ->  failwith "Unsupported message"
+                    | AggregationCompleted  ->
+                        log.Debug("aggregationCompleted {0}!", n)
+                        if n <= 1 then
+                            replyTo <! SpawnCompleted
+                            return! collectLoop 0 emptyDict self
+                        else
+                            return! aggregationCompletedLoop (n - 1) replyTo
                 }
 
             collectLoop 0 emptyDict mailbox.Self
@@ -194,6 +235,8 @@ module Domain =
         let cont (mailbox : Actor<Event>) =
             let composeOutput nGeneration cells (output:StringBuilder) =
                 output.AppendLine(sprintf "Generation %d" nGeneration) |> ignore
+
+                let log = mailbox.Context.System.Log
 
                 if cells |> Seq.isEmpty then
                     ignore
@@ -229,6 +272,8 @@ module Domain =
 
                     for line in printable do
                         output.AppendLine(new String(line)) |> ignore
+
+                    log.Debug(output.ToString())
 
                     ignore
 

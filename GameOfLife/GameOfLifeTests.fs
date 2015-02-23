@@ -229,14 +229,14 @@ module Tests =
                                     Generation 0                           :> obj
                                     LivingCell (0, 0)                      :> obj
                                     Neighborhood((0 + 0, 0 + 0), Occupied) :> obj
-                                    Neighborhood((0 + 1, 0 + 1), Unknown)  :> obj 
-                                    Neighborhood((0 + 1, 0 + 0), Unknown)  :> obj 
-                                    Neighborhood((0 + 1, 0 - 1), Unknown)  :> obj 
-                                    Neighborhood((0 + 0, 0 - 1), Unknown)  :> obj 
-                                    Neighborhood((0 - 1, 0 - 1), Unknown)  :> obj 
-                                    Neighborhood((0 - 1, 0 + 0), Unknown)  :> obj 
-                                    Neighborhood((0 - 1, 0 + 1), Unknown)  :> obj 
-                                    Neighborhood((0 + 0, 0 + 1), Unknown)  :> obj                                    
+                                    Neighborhood((0 + 1, 0 + 1), Unknown)  :> obj
+                                    Neighborhood((0 + 1, 0 + 0), Unknown)  :> obj
+                                    Neighborhood((0 + 1, 0 - 1), Unknown)  :> obj
+                                    Neighborhood((0 + 0, 0 - 1), Unknown)  :> obj
+                                    Neighborhood((0 - 1, 0 - 1), Unknown)  :> obj
+                                    Neighborhood((0 - 1, 0 + 0), Unknown)  :> obj
+                                    Neighborhood((0 - 1, 0 + 1), Unknown)  :> obj
+                                    Neighborhood((0 + 0, 0 + 1), Unknown)  :> obj
                                 |]) |> ignore
             
             self.ExpectNoMsg(waitFor)
@@ -249,6 +249,8 @@ module Tests =
 
             collectorRef <! AggregationStarted 0
 
+            self.ExpectMsg(SpawnCompleted, timeout) |> ignore
+
             self.ExpectNoMsg(waitFor)
 
             system.Shutdown()
@@ -259,6 +261,8 @@ module Tests =
 
             collectorRef <! AggregationStarted 1
             collectorRef <! Neighborhood((0, 0), Occupied)
+
+            self.ExpectMsg(SpawnCompleted, timeout) |> ignore
 
             self.ExpectNoMsg(waitFor)
 
@@ -272,6 +276,8 @@ module Tests =
             collectorRef <! Neighborhood((0, 0), Occupied)
             collectorRef <! Neighborhood((0, 0), Unknown)
 
+            self.ExpectMsg(SpawnCompleted, timeout) |> ignore
+
             self.ExpectNoMsg(waitFor)
 
             system.Shutdown()
@@ -283,6 +289,8 @@ module Tests =
             collectorRef <! AggregationStarted 2
             collectorRef <! Neighborhood((0, 0), Unknown)
             collectorRef <! Neighborhood((0, 0), Unknown)
+
+            self.ExpectMsg(SpawnCompleted, timeout) |> ignore
 
             self.ExpectNoMsg(waitFor)
 
@@ -298,6 +306,7 @@ module Tests =
             collectorRef <! Neighborhood((0, 0), Unknown)
 
             self.ExpectMsg(Spawn(0, 0), timeout) |> ignore
+            self.ExpectMsg(SpawnCompleted, timeout) |> ignore
 
             self.ExpectNoMsg(waitFor)
 
@@ -313,6 +322,7 @@ module Tests =
             collectorRef <! Neighborhood((0, 0), Unknown)
 
             self.ExpectMsg(Spawn(0, 0), timeout) |> ignore
+            self.ExpectMsg(SpawnCompleted, timeout) |> ignore
 
             self.ExpectNoMsg(waitFor)
 
@@ -329,6 +339,7 @@ module Tests =
             collectorRef <! Neighborhood((0, 0), Unknown)
 
             self.ExpectMsg(Spawn(0, 0), timeout) |> ignore
+            self.ExpectMsg(SpawnCompleted, timeout) |> ignore
 
             self.ExpectNoMsg(waitFor)
 
@@ -344,6 +355,8 @@ module Tests =
             collectorRef <! Neighborhood((0, 0), Unknown)
             collectorRef <! Neighborhood((0, 0), Unknown)
 
+            self.ExpectMsg(SpawnCompleted, timeout) |> ignore
+
             self.ExpectNoMsg(waitFor)
 
             system.Shutdown()
@@ -358,6 +371,8 @@ module Tests =
             collectorRef <! Neighborhood((0, 0), Unknown)
             collectorRef <! Neighborhood((0, 0), Unknown)
             collectorRef <! Neighborhood((0, 0), Unknown)
+
+            self.ExpectMsg(SpawnCompleted, timeout) |> ignore
 
             self.ExpectNoMsg(waitFor)
 
