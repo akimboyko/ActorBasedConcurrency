@@ -139,13 +139,12 @@ module Domain =
                         sender <! AggregationStarted(9 * cells.Count)
                         let eventStream = mailbox.Context.System.EventStream
 
-                        // replace with `pub` during next release
-                        eventStream.Publish(Generation nGeneration)
+                        pubblish (Generation nGeneration) eventStream
 
                         for xy in cells.Keys do
                             let actorRef = cells.[xy]
                             actorRef.Tell(Spawn(xy), sender)
-                            eventStream.Publish(LivingCell xy)
+                            pubblish (LivingCell xy) eventStream
 
                         log.Debug("spawn {0} completed!", nGeneration)
 
