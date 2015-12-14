@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Actor-based Concurrency with F# and Akka.NET</title>
+
+		<meta name="description" content="Actor-based Concurrency with F# and Akka.NET">
+		<meta name="author" content="Akim Boyko">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+
+		<!-- frameworksdays.com specific -->
+		<link rel="stylesheet" href="css/fwdays.css">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/github.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section class="slide cover" id="Cover"
+						data-background="images/fwdays/title-slide.png"
+						data-background-size="90%"><div>
+
+					<h2>Actor-based<br/>Concurrency</h2>
+					<h3>with F# and Akka.NET</h3>
+					<p>by Akim Boyko <a href="http://akimboyko.github.io">github</a> / <a href="http://twitter.com/AkimBoyko">twitter</a>
+
+					<!--
+						<h2>HTML template</h2>
+						<p>Speaker name</p>
+					-->
+
+					<!-- <img src="pictures/sponsors.png" class="sponsors"> -->
+
+					<!--<style>
+						#Cover .sponsors {
+							position: absolute;
+							bottom: 0;
+							left: 10%;
+							top: auto;
+							bottom: 5%;
+							width: 80%;
+							height: auto;
+							z-index: 1;
+						}
+						#Cover h2 {
+							margin:160px 0 0;
+							color:#6166AB;
+							text-align:center;
+							font-size:70px;
+							}
+						#Cover p {
+							margin:10px 0 0;
+							text-align:center;
+							color:#6166AB;
+							font-style:italic;
+							font-size:20px;
+							}
+						#Cover p a {
+							color:#000;
+							}
+
+						#Cover div {
+							background: url(images/fwdays/title-slide.png) center bottom !important;
+							background-size: 100% !important;
+						}
+					</style>-->
+				</div></section>
+
+				<section>
+					<h1>Actor-based Concurrency</h1>
+					<h3>with F# and Akka.NET</h3>
+					<p>by Akim Boyko <a href="http://akimboyko.github.io">github</a> / <a href="http://twitter.com/AkimBoyko">twitter</a>
+					</p>
+					<p><img style='width:200px; height: auto; border: 0px; box-shadow: none' 
+                        src='images/itera_logo.png'
+                        alt='Itera logo' /></p>
+				</section>
+
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## F# has new logo!
+						
+							![F# new logo](./images/fsharp512.png "F# new logo")
+
+							image by [The F# Software Foundation](http://fsharp.org/foundation/logo.html)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## and Akka has new logo too :)
+						
+							![Akka new logo](./images/akka512.png "Akka new logo")
+
+							image by [Akka.io](http://akka.io/)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## and RosKomNadzor too :)))
+						
+							![RosKomNadzor new logo](./images/RSOC.png "RosKomNadzor logo")
+
+							image by [RKN](http://eng.rkn.gov.ru/)
+						</script>
+					</section>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Am I nAKKAer?
+					
+						![Found on Internet](./images/Found_On_Internet_Mar_2014.png "Found on Internet")
+
+						image by [Telerik](http://sites.fastspring.com/telerik/product/softwarecraftsmanshipdigitalimagepack)
+					</script>
+				</section>
+
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## Programming...
+
+							![Parallel, asynchronous and concurrent programming](./images/ParallelAsynchronousConcurrent.png "Parallel, asynchronous and concurrent programming")
+
+							* Parallel
+							* asynchronous
+							* concurrent
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### The adj. _reactive_ has 2 senses
+						
+							* participating readily in reactions
+							* tending to react to a stimulus
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							# The Reactive Manifesto
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Responsive
+
+							The system responds in a timely manner if at all possible
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Resilient
+
+							The system stays responsive in the face of failure
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Elastic
+
+							The system stays responsive under varying workload
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Message Driven
+
+							Reactive Systems rely on **asynchronous message-passing** to establish a boundary between components that ensures _loose coupling_, _isolation_, _location transparency_, and provides the means to delegate _errors as messages_.
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							The Actor model adopts the philosophy that [**everything is an actor**](http://en.wikipedia.org/wiki/Actor_model)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Alan Kay`s Definition Of Object Oriented 
+
+							1. Everything is an Object
+							2. Objects communicate by sending and receiving messages
+							3. Objects have their own memory
+							4. Every object is an instance of a class
+							5. The class holds the shared behavior for its instances
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### What is actor?
+
+							An actor is a computational entity that, in response to a message it receives, can concurrently:
+
+							* send a finite number of messages to other actors;
+							* create a finite number of new actors;
+							* designate the behavior to be used for the next message it receives.
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Actor Encapsulation
+						
+							* No direct access is possible to the actor behavior.
+							* Only messages can be sent to known addresses `ActorRef`
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Actor-Internal Evaluation Order
+						
+							* An actor is **single-threaded**
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Reliable Messaging
+						
+							* all messages can be persisted
+							* can include unique correlation IDs
+							* delivery can be retries until successful
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Actor
+
+							![Actor](./images/actorSchema.png "Actor")
+
+							[akkadotnet.github.io](http://akkadotnet.github.io/wiki/Actors)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Actor Lifecycle
+					
+							![Actor Lifecycle](./images/actorLifecycle.png "Actor Lifecycle")
+
+							[akkadotnet.github.io](http://akkadotnet.github.io/wiki/Actor%20lifecycle)
+						</script>
+					</section>
+				</section>
+
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							# Failure as a message
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## The Actor Model is anthropomorphic
+
+							* Individual failure is handled by the team leader (supervisor)
+							* That is able to handle error and restart child if needed
+							* Actors work together in teams (systems)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Strategies
+
+							![One-For-One Strategy](./images/superviserStrategyOneForOne.png "One-For-One Strategy")
+
+							[akkadotnet.github.io](http://akkadotnet.github.io/wiki/Supervision)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Strategies
+
+							* `OneForOneStrategy`
+							* `AllForOneStrategy`
+							* others
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Circuit Breakers
+
+							![Circuit Breaker](./images/circuitBreakerStates.png "Circuit Breaker")
+
+							[doc.akka.io](http://doc.akka.io/docs/akka/snapshot/common/circuitbreaker.html)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Akka and Back-pressure
+
+							Rule #1 of Akka => don`t block inside actors
+
+							![Backpressure](./images/NoBackpressure.gif "Backpressure")
+
+							inspired by [@kvnwbbr](https://twitter.com/kvnwbbr/status/492389834833399809)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Bulkheading
+
+							![Watertight compartments in the Titanic](./images/bulkheadingTitanic.jpg "Watertight compartments in the Titanic")
+
+							[Watertight compartments in the Titanic](http://staff.imsa.edu/~esmith/treasurefleet/treasurefleet/watertight_compartments.htm)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Brandmauer
+
+							![Brandmauer](./images/brandmauer.jpg "Brandmauer")
+
+							[schwaebischhall.de](http://www.schwaebischhall.de/)
+						</script>
+					</section>
+				</section>
+
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							# Find Right abstraction!
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Why Erlang-style message passing became popular?
+
+							Erlang, Elixir, Java, Scala, Clojure, etc.
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Myth of Nine "9"s
+
+							Ericsson AXD 301 Switch - 1996
+
+							![Ericsson AXD 301 Switch](./images/EricssonAXD301.jpg "Ericsson AXD 301 Switch")
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Myth of Nine "9"s
+
+							* _Competent_ organisation and people
+							* _Efficient_ process
+							* _Excellent_ technology (e.g. Erlang/OTP)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## How it works?
+
+							![Ericsson AXD 301 Switch](./images/EricssonAXD301.png "Ericsson AXD 301 Switch")
+						</script>
+					</section>
+				</section>
+
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## What`s a good use-case for Akka.NET?
+
+							* Batch processing (any industry)
+							* Communications Hub (Telecom, Web media, Mobile media)
+							* Simulation: Master/Worker, Compute Grid, MapReduce etc
+							* Gaming and Betting
+							* Automobile and Traffic Systems
+							* Business Intelligence/Data Mining/general purpose crunching
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Is Akka.NET production ready?
+
+							[stackoverflow.com: Good use case for Akka](http://stackoverflow.com/questions/4493001/good-use-case-for-akka) :)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Law of the instrument
+
+							![Golden Hammer](./images/GoldenHammer.jpg "Golden Hammer")
+
+							image by [Telerik](http://sites.fastspring.com/telerik/product/softwarecraftsmanshipdigitalimagepack)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Law of the instrument
+
+							Do ~~not~~ try this **at home first**!
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Spaghetti code
+
+							![Spaghetti Code](./images/SpaghettiCode.jpg "Spaghetti Code")
+
+							image by [Telerik](http://sites.fastspring.com/telerik/product/softwarecraftsmanshipdigitalimagepack)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Reactive in .Net landscape
+
+							* [Rx](https://rx.codeplex.com/)
+							* [Orleans](http://research.microsoft.com/en-us/projects/orleans/)
+							* [F# agents and `FSharp.CloudAgent`](http://isaacabraham.github.io/FSharp.CloudAgent/)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Comparing with F# agents
+
+							* In process only
+							* No supervision
+							* No build in durable mailboxes
+							* [FSharp.CloudAgent](http://isaacabraham.github.io/FSharp.CloudAgent/)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Events as records/discriminated unions and DDD
+
+							```
+							type Result<'ok, 'err> =
+							    | Ok of 'ok
+							    | Error of 'err
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Events as records/discriminated unions and DDD
+
+							```
+							let (>=>) f1 f2 arg =
+							    match f1 arg with
+							    | Ok data -> f2 data
+							    | Error e -> Error e
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Akka.NET and async/await
+
+							![async/await](./images/akkaAsyncAwait.png "async/await")
+
+							[Roger Alsing](https://twitter.com/RogerAlsing/status/538767054359511041)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Akka.NET and GC
+
+							```
+							<?xml version="1.0" encoding="utf-8"?>
+							<configuration>
+							  <runtime>
+							    <gcConcurrent enabled="true"/>
+							    <gcServer enabled="true"/>
+							  </runtime>
+							</configuration>
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Akka vs. Corba
+
+							CORBA story by [@rssh1](https://twitter.com/rssh1)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### CORBA [1996]
+
+							Let`s do _remote_ and _local_ call undistinguished
+
+							Now it is common **anti-pattern**!
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Akka [2009]
+
+							Let`s do _remote_ and _local_ call undistinguished
+
+							Why, oh why? The Old New Old New Things!
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Akka.NET team
+
+							* [@AkkaDotNet](http://akkadotnet.github.io/pages/team)
+							* [Roger Alsing](https://twitter.com/rogeralsing)
+							* [Aaron Stannard](https://twitter.com/aaronontheweb)
+							* [Håkan Canberger](https://twitter.com/hcanber)
+							* [Bartosz Sypytkowski](https://twitter.com/Horusiath)
+							* [David Smith](https://twitter.com/smalldave)
+							* [Jérémie Chassaing](https://twitter.com/thinkb4coding)
+						</script>
+					</section>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						![QRcode actors](./images/QRcodeActors.png "QRcode actors")
+		
+						[bit.ly/FSharpActors](http://bit.ly/FSharpActors)
+
+						[bit.ly/FSharpActorsEx](http://bit.ly/FSharpActorsEx)                                        
+					</script>
+				</section>
+				
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.pack.js', async: true, callback: function() { hljs.initHighlighting.called = false; hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
