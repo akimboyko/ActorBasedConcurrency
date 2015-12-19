@@ -26,5 +26,9 @@ type EchoServer =
 let echoServer = system.ActorOf(Props(typedefof<EchoServer>, Array.empty))
 
 echoServer <! "F#!"
+echoServer <! "Kyiv FWDays!"
+echoServer <! "MONO!"
+
+Threading.Thread.Sleep 5000
 
 system.Shutdown()

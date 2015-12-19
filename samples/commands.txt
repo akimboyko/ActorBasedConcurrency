@@ -1,0 +1,11 @@
+sudo mkdir -p /mnt/samples && sudo mount -r -t vboxsf samples /mnt/samples
+
+cp /mnt/samples/Dockerfile . && cp -r /mnt/samples/bin .
+
+docker build -t samples .
+
+docker run -i samples
+
+docker run -it samples bash
+
+docker images

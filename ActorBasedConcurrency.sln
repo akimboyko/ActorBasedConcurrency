@@ -3,18 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{1958B910-A1CE-4744-8071-E388A6AEC38D}"
-	ProjectSection(SolutionItems) = preProject
-		samples\01_SayHello.fsx = samples\01_SayHello.fsx
-		samples\02_SimplifySayHello.fsx = samples\02_SimplifySayHello.fsx
-		samples\03_ActorsAndThreads.fsx = samples\03_ActorsAndThreads.fsx
-		samples\04_SynchronizedAsk.fsx = samples\04_SynchronizedAsk.fsx
-		samples\05_RemoteActor.fsx = samples\05_RemoteActor.fsx
-		samples\06_EventStream.fsx = samples\06_EventStream.fsx
-		samples\07_TypedMessages.fsx = samples\07_TypedMessages.fsx
-		samples\Bootstrap.fsx = samples\Bootstrap.fsx
-		samples\HelloActor!.fsx = samples\HelloActor!.fsx
-	EndProjectSection
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Sample", "samples\Sample.fsproj", "{E274365F-2DB3-4EEF-97A9-3CAACFA2751D}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GameOfLife", "GameOfLife\GameOfLife.fsproj", "{4B9DF1F8-6E7C-42DA-AC8C-C966AD0A4CA9}"
 EndProject
@@ -28,6 +17,10 @@ Global
 		{4B9DF1F8-6E7C-42DA-AC8C-C966AD0A4CA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B9DF1F8-6E7C-42DA-AC8C-C966AD0A4CA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B9DF1F8-6E7C-42DA-AC8C-C966AD0A4CA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E274365F-2DB3-4EEF-97A9-3CAACFA2751D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E274365F-2DB3-4EEF-97A9-3CAACFA2751D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E274365F-2DB3-4EEF-97A9-3CAACFA2751D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E274365F-2DB3-4EEF-97A9-3CAACFA2751D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

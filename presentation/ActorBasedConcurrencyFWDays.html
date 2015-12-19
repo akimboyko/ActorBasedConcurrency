@@ -97,7 +97,7 @@
 
 							`docker run -i fsharp/fsharp`
 
-							[Official F# docker image](https://hub.docker.com/r/fsharp/fsharp/)
+							[Official F# docker repository](https://hub.docker.com/r/fsharp/fsharp/)
 						</script>
 					</section>
 				</section>
@@ -487,6 +487,72 @@
 						</script>
 					</section>
 
+				</section>
+
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							# Demo Time
+						</script>
+					</section>
+
+					<section
+						data-background="images/docker_logo.png"
+						data-background-size="50%">
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Dockerfile
+
+							```
+							FROM mono:latest
+
+							MAINTAINER Akim Boyko "akim dot boyko at gmail.com" version: 0.1
+
+							ENV AKKADIR /akka
+							RUN mkdir -p $AKKADIR
+
+							WORKDIR $AKKADIR
+							RUN mozroots --import --sync
+
+							ADD bin/Debug $AKKADIR 
+							CMD [ "mono",  "./Sample.exe" ]
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## How to run it
+
+							```
+							#!/bin/bash
+
+							sudo mkdir -p /mnt/samples && sudo mount -r -t vboxsf samples /mnt/samples
+
+							cp /mnt/samples/Dockerfile . && cp -r /mnt/samples/bin .
+
+							docker build -t samples .
+
+							docker run -i samples
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							### Mono + F# + Docker + Akka.NET
+
+							![Akka.NET and F# in Mono container](./images/docker_akkadotnet.gif "Akka.NET and F# in Mono container")
+
+							[Official MONO docker repository](https://hub.docker.com/_/mono/)
+						</script>
+					</section>
+
+				</section>
+
+				<section>
 					<section data-markdown>
 						<script type="text/template">
 							### Akka.NET and GC

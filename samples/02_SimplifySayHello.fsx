@@ -24,4 +24,6 @@ let echoServer =
 
 echoServer <! "F#!"
 
+Threading.Thread.Sleep 5000
+
 system.Shutdown()
