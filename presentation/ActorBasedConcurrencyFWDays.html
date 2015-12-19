@@ -110,7 +110,7 @@
 
 					<section data-markdown>
 						<script type="text/template">
-							## Am I nAKKAer?
+							## Am I h**AKKA**er?
 						
 							![Found on Internet](./images/Found_On_Internet_Mar_2014.png "Found on Internet")
 
@@ -130,43 +130,31 @@
 						</script>
 					</section>
 
-					<section data-markdown>
-						<script type="text/template">
-							### The adj. _reactive_ has 2 senses
-						
-							* participating readily in reactions
-							* tending to react to a stimulus
-						</script>
+					<section>
+						<h3>The adj. <i>reactive</i> has 2 senses</h3>
+						<ul>
+							<li class="fragment">participating readily in reactions</li>
+							<li class="fragment">tending to react to a stimulus</li>
+						</ul>
 					</section>
 
-					<section data-markdown>
-						<script type="text/template">
-							# The Reactive Manifesto
-						</script>
+					<section>
+						<h1>The Reactive Manifesto</h1>
+						<ul>
+							<li class="fragment"><strong>Responsive</strong><br/>
+							The system responds in a timely manner if at all possible</li>
+							
+							<li class="fragment"><strong>Resilient</strong><br/>
+							The system stays responsive in the face of failure</li>
+							
+							<li class="fragment"><strong>Elastic</strong><br/>
+							The system stays responsive under varying workload</li>
+						</ul>
 					</section>
 
-					<section data-markdown>
-						<script type="text/template">
-							## Responsive
-
-							The system responds in a timely manner if at all possible
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Resilient
-
-							The system stays responsive in the face of failure
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Elastic
-
-							The system stays responsive under varying workload
-						</script>
+					<section
+						data-background="images/reactive-manifesto.png"
+						data-background-size="50%">
 					</section>
 
 					<section data-markdown>
@@ -177,61 +165,66 @@
 						</script>
 					</section>
 
+					<section
+						data-background="images/lets_be_reactive.gif"
+						data-background-size="75%">
+					</section>
+
+					<section>
+						<h2>Alan Kay`s Definition Of Object Oriented</h2>
+
+						<ol>
+							<li class="fragment">Everything is an Object</li>
+							<li class="fragment">Objects communicate by sending and receiving messages</li>
+							<li class="fragment">Objects have their own memory</li>
+							<li class="fragment">Every object is an instance of a class</li>
+							<li class="fragment">The class holds the shared behavior for its instances</li>
+						</ol>
+					</section>
+
 					<section data-markdown>
 						<script type="text/template">
 							The Actor model adopts the philosophy that [**everything is an actor**](http://en.wikipedia.org/wiki/Actor_model)
 						</script>
 					</section>
 
-					<section data-markdown>
-						<script type="text/template">
-							## Alan Kay`s Definition Of Object Oriented 
+					<section>
+						<h3>What is actor?</h3>
 
-							1. Everything is an Object
-							2. Objects communicate by sending and receiving messages
-							3. Objects have their own memory
-							4. Every object is an instance of a class
-							5. The class holds the shared behavior for its instances
-						</script>
+						An actor is a computational entity that, in response to a message it receives, can concurrently:
+
+						<ul>
+							<li class="fragment">send a finite number of messages to other actors;</li>
+							<li class="fragment">create a finite number of new actors;</li>
+							<li class="fragment">designate the behavior to be used for the next message it receives</li>
+						</ul>
 					</section>
 
-					<section data-markdown>
-						<script type="text/template">
-							### What is actor?
-
-							An actor is a computational entity that, in response to a message it receives, can concurrently:
-
-							* send a finite number of messages to other actors;
-							* create a finite number of new actors;
-							* designate the behavior to be used for the next message it receives.
-						</script>
+					<section>
+						<h3>Actor Encapsulation</h3>
+					
+						<ul>
+							<li class="fragment">No direct access is possible to the actor behavior</li>
+							<li class="fragment">Only messages can be sent to known addresses</li>
+						</ul>
 					</section>
 
-					<section data-markdown>
-						<script type="text/template">
-							### Actor Encapsulation
+					<section>
+						<h3>Actor-Internal Evaluation Order</h3>
 						
-							* No direct access is possible to the actor behavior.
-							* Only messages can be sent to known addresses `ActorRef`
-						</script>
+						<ul>
+							<li class="fragment">An actor is <strong>single-threaded</strong></li>
+						</ul>
 					</section>
 
-					<section data-markdown>
-						<script type="text/template">
-							### Actor-Internal Evaluation Order
+					<section>
+						<h3>Reliable Messaging</h3>
 						
-							* An actor is **single-threaded**
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							### Reliable Messaging
-						
-							* all messages can be persisted
-							* can include unique correlation IDs
-							* delivery can be retries until successful
-						</script>
+						<ul>
+							<li class="fragment">all messages can be persisted</li>
+							<li class="fragment">can include unique correlation IDs</li>
+							<li class="fragment">delivery can be retries until successful</li>
+						</ul>
 					</section>
 
 					<section data-markdown>
@@ -262,33 +255,33 @@
 						</script>
 					</section>
 
-					<section data-markdown>
-						<script type="text/template">
-							## The Actor Model is anthropomorphic
+					<section>
+						<h2>The Actor Model is <strong>anthropomorphic</strong></h2>
 
-							* Individual failure is handled by the team leader (supervisor)
-							* That is able to handle error and restart child if needed
-							* Actors work together in teams (systems)
-						</script>
+						<ul>
+							<li class="fragment">Individual failure is handled by the team leader (supervisor)</li>
+							<li class="fragment">That is able to handle error and restart child if needed</li>
+							<li class="fragment">Actors work together in teams (systems)</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Strategies</h2>
+
+						<ul>
+							<li class="fragment"><code>OneForOneStrategy</code></li>
+							<li class="fragment"><code>AllForOneStrategy</code></li>
+							<li class="fragment">others&hellip;</li>
+						</ul>
 					</section>
 
 					<section data-markdown>
 						<script type="text/template">
-							## Strategies
+							## Supervision and Monitoring
 
 							![One-For-One Strategy](./images/superviserStrategyOneForOne.png "One-For-One Strategy")
 
 							[akkadotnet.github.io](http://akkadotnet.github.io/wiki/Supervision)
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Strategies
-
-							* `OneForOneStrategy`
-							* `AllForOneStrategy`
-							* others
 						</script>
 					</section>
 
@@ -318,99 +311,29 @@
 						<script type="text/template">
 							## Bulkheading
 
-							![Watertight compartments in the Titanic](./images/bulkheadingTitanic.jpg "Watertight compartments in the Titanic")
+							![Watertight compartments in the Bow Section](./images/bulkheadingTitanic.jpg "Watertight compartments in the Bow Section")
 
-							[Watertight compartments in the Titanic](http://staff.imsa.edu/~esmith/treasurefleet/treasurefleet/watertight_compartments.htm)
+							[Titanic: Watertight compartments](http://staff.imsa.edu/~esmith/treasurefleet/treasurefleet/watertight_compartments.htm)
 							
 							<!-- http://www.ece.ubc.ca/~matei/EECE417/BASS/files/01fig01.gif -->
 						</script>
 					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Brandmauer
-
-							![Brandmauer](./images/brandmauer.jpg "Brandmauer")
-
-							[schwaebischhall.de](http://www.schwaebischhall.de/)
-						</script>
-					</section>
 				</section>
 
 				<section>
-					<section data-markdown>
-						<script type="text/template">
-							# Find Right abstraction!
-						</script>
-					</section>
+					<section>
+						<h2>What`s a good use-case for Akka and Akka.NET?</h2>
 
-					<section data-markdown>
-						<script type="text/template">
-							### Why Erlang-style message passing became popular?
-
-							Erlang, Elixir, Java, Scala, Clojure, etc.
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Myth of Nine "9"s
-
-							Ericsson AXD 301 Switch - 1996
-
-							![Ericsson AXD 301 Switch](./images/EricssonAXD301.jpg "Ericsson AXD 301 Switch")
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Myth of Nine "9"s
-
-							* _Competent_ organisation and people
-							* _Efficient_ process
-							* _Excellent_ technology (e.g. Erlang/OTP)
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							### How it works?
-
-							![Ericsson AXD 301 Switch](./images/EricssonAXD301.png "Ericsson AXD 301 Switch")
-						</script>
-					</section>
-				</section>
-
-				<section>
-					<section data-markdown>
-						<script type="text/template">
-							## What`s a good use-case for Akka.NET?
-
-							* Batch processing (any industry)
-							* Communications Hub (Telecom, Web media, Mobile media)
-							* Simulation: Master/Worker, Compute Grid, MapReduce etc
-							* Gaming and Betting
-							* Automobile and Traffic Systems
-							* Business Intelligence/Data Mining/general purpose crunching
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Is Akka.NET production ready?
-
-							[stackoverflow.com: Good use case for Akka](http://stackoverflow.com/questions/4493001/good-use-case-for-akka) :)
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Law of the instrument
-
-							![Golden Hammer](./images/GoldenHammer.jpg "Golden Hammer")
-
-							image by [Telerik](http://sites.fastspring.com/telerik/product/softwarecraftsmanshipdigitalimagepack)
-						</script>
+						<ul>
+							<li class="fragment">Data collection and mining</li>
+							<li class="fragment">General purpose numbers crunching</li>
+							<li class="fragment">Real-time analysis and probabilistic programming</li>
+							<li class="fragment">Active and reinforcement machine learning</li>
+							<li class="fragment">Simulation: Master/Worker, Compute Grid, MapReduce, etc</li>
+							<li class="fragment">Streaming/Reactive Streaming: bounded and unbounded</li>
+							<li class="fragment">Gaming and Betting</li>
+							<li class="fragment"><a href='http://stackoverflow.com/questions/4493001/good-use-case-for-akka'>stackoverflow.com: Good use case for Akka</a></li>
+						</ul>
 					</section>
 
 					<section data-markdown>
@@ -418,37 +341,30 @@
 							## Law of the instrument
 
 							Do ~~not~~ try this **at home first**!
-						</script>
-					</section>
 
-					<section data-markdown>
-						<script type="text/template">
-							### Spaghetti code
-
-							![Spaghetti Code](./images/SpaghettiCode.jpg "Spaghetti Code")
+							![Golden Hammer](./images/GoldenHammer.jpg "Golden Hammer")
 
 							image by [Telerik](http://sites.fastspring.com/telerik/product/softwarecraftsmanshipdigitalimagepack)
 						</script>
 					</section>
 
-					<section data-markdown>
-						<script type="text/template">
-							### Reactive in .Net landscape
+					<section>
+						<h2>Reactive in .NET landscape</h2>
 
-							* [Rx](https://rx.codeplex.com/)
-							* [Orleans](http://research.microsoft.com/en-us/projects/orleans/)
-							* [F# agents and `FSharp.CloudAgent`](http://isaacabraham.github.io/FSharp.CloudAgent/)
-						</script>
+						<ul>
+							<li class="fragment"><a href='http://rx.codeplex.com'>Rx</a></li>
+							<li class="fragment"><a href='http://github.com/dotnet/orleans'>Orleans - Distributed Virtual Actor Mode</a></li>
+							<li class="fragment"><a href='http://github.com/yevhen/Orleankka'>Orleankka</a>
+							<li class="fragment"><a href='http://isaacabraham.github.io/FSharp.CloudAgent'>F# agents and <code>FSharp.CloudAgent</code></a></li>
+							<li class="fragment"><a href='https://github.com/hdinsight/hdinsight-storm-examples/blob/master/SCPNet-GettingStarted.md'>Apache Storm Microsoft.SCP.Net.SDK</a></li>
+						</li>
 					</section>
+				</section>
 
+				<section>
 					<section data-markdown>
 						<script type="text/template">
-							### Comparing with F# agents
-
-							* In process only
-							* No supervision
-							* No build in durable mailboxes
-							* [FSharp.CloudAgent](http://isaacabraham.github.io/FSharp.CloudAgent/)
+							# Akka.NET F# API
 						</script>
 					</section>
 
@@ -479,11 +395,25 @@
 
 					<section data-markdown>
 						<script type="text/template">
-							### Akka.NET and async/await
+							### `async` programming 
 
-							![async/await](./images/akkaAsyncAwait.png "async/await")
+							[`pipeTo` function](http://getakka.net/docs/FSharp%20API) and its operators `<!|` and `|!>`
 
-							[Roger Alsing](https://twitter.com/RogerAlsing/status/538767054359511041)
+							```
+							open System.IO
+
+							let handler (mailbox: Actor<obj>) msg =
+							    match box msg with
+							    | :? FileInfo as fi ->
+							        let reader = new StreamReader(fi.OpenRead())
+							        reader.AsyncReadToEnd() |!> mailbox.Self
+							    | :? string as content ->
+							        printfn "File content: %s" content
+							    | _ -> mailbox.Unhandled()
+
+							let aref = spawn system "my-actor" (actorOf2 handler)
+							aref <! new FileInfo "Akka.xml"
+							```
 						</script>
 					</section>
 
@@ -496,9 +426,12 @@
 						</script>
 					</section>
 
-					<section
-						data-background="images/docker_logo.png"
-						data-background-size="50%">
+					<section data-markdown>
+						<script type="text/template">
+							## Akka.NET F# samples
+
+							[bit.ly/FSharpActorsEx](http://bit.ly/FSharpActorsEx)                                        
+						</script>
 					</section>
 
 					<section data-markdown>
@@ -550,9 +483,6 @@
 						</script>
 					</section>
 
-				</section>
-
-				<section>
 					<section data-markdown>
 						<script type="text/template">
 							### Akka.NET and GC
@@ -568,7 +498,9 @@
 							```
 						</script>
 					</section>
+				</section>
 
+				<section>
 					<section data-markdown>
 						<script type="text/template">
 							## Akka vs. Corba
@@ -597,6 +529,20 @@
 						</script>
 					</section>
 
+
+
+					<section data-markdown>
+						<script type="text/template">
+							We dont know how to design systems yet.
+
+							So lets not make what we dont know into a religion.
+
+							-Alan Kay
+						</script>
+					</section>
+				</section>
+
+				<section>
 					<section data-markdown>
 						<script type="text/template">
 							## Akka.NET team
@@ -608,6 +554,14 @@
 							* [Bartosz Sypytkowski](https://twitter.com/Horusiath)
 							* [David Smith](https://twitter.com/smalldave)
 							* [Jérémie Chassaing](https://twitter.com/thinkb4coding)
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Akka.NET Bootcamp
+							
+							[Distributed Systems made simple](https://petabridge.com/bootcamp/)
 						</script>
 					</section>
 				</section>
